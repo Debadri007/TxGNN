@@ -16,8 +16,8 @@ export
 ifndef MODEL_ZIP_URL
 $(error MODEL_ZIP_URL is not set. Make sure it's defined in your .env file)
 endif
-ifndef DATA_ZIP_URL
-$(error DATA_ZIP_URL is not set. Make sure it's defined in your .env file)
+ifndef GRAPH_DATA_URL
+$(error GRAPH_DATA_URL is not set. Make sure it's defined in your .env file)
 endif
 
 # Create necessary directories
@@ -54,7 +54,7 @@ verify-model:
 download-data: create-directories
 	@if [ ! -d app/data/dataset ]; then \
 		echo "Downloading data files..."; \
-		curl -L "$(DATA_ZIP_URL)" -o app/data/data.zip; \
+		curl -L "$(GRAPH_DATA_URL)" -o app/data/data.zip; \
 		unzip app/data/data.zip -d app/data; \
 		rm app/data/data.zip; \
 	else \
