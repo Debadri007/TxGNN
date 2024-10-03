@@ -10,3 +10,4 @@ matplotlib
 scikit-learn
 goatools
 dgl==0.6.1
+torch_geometric

@@ -1,7 +1,5 @@
 networks:
-  hivata-frontend-net-dev:
-    driver: bridge
-  hivata-backend-net-dev:
+  txgnn-network:
     driver: bridge
 
 services:
@@ -21,9 +19,8 @@ services:
       - ./TxGNN/app:/app/
       - ./TxGNN/backend/model:/model
       - ./TxGNN/backend/data:/data:rw
-      - hf_cache:/${HF_HUB_CACHE}
     networks:
-      - txgnn-backend-net
+      - txgnn-network
     restart: always
     ipc: host
     tty: true # enable colorized logs

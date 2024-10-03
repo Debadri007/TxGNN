@@ -8,6 +8,7 @@ This repository provides the implementation of a RESTful API that exposes TxGNN'
     ```bash
     git clone https://github.com/yourusername/txgnn-rest-api.git
     cd txgnn-rest-api
+    cp .env.example .env
     ```
 2. Run the application using Make
     ```bash
@@ -56,6 +57,8 @@ The repository includes a `docker-compose.yml` file for managing the Docker cont
 1. **Clone the repository**
     ```bash
     git clone https://github.com/healthecosystem/TxGNN.git
+    cd txgnn-rest-api
+    cp .env.example .env
     ```
 2. **Pull**, **build**, and **run** the services Use the following commands from the `Makefile` to pull the required images, build, and run the container:
     ```bash
