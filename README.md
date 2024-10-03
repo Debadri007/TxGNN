@@ -16,6 +16,10 @@ This repository provides the implementation of a RESTful API that exposes TxGNN'
     ```
 3. Access the API Once the services are up, the API will be [locally accessible at port 8883](http://localhost:8883).
 
+## Todos:
+- [ ] Set indexing split mode  as env var enum and
+- [ ] check validity and show info message about index split
+
 ## Table of Contents
 - [Overview](#overview)
 - [Features](#features)

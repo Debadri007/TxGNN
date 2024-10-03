@@ -16,9 +16,9 @@ services:
     ports:
       - 8883:80
     volumes:
-      - ./TxGNN/app:/app/
-      - ./TxGNN/backend/model:/model
-      - ./TxGNN/backend/data:/data:rw
+      - ./app:/app/
+      - ./backend/model:/model
+      - ./backend/data:/data:rw
     networks:
       - txgnn-network
     restart: always

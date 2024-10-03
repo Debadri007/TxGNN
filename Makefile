@@ -52,11 +52,11 @@ verify-model:
 
 # Download data files
 download-data: create-directories
-	@if [ ! -d app/data/dataset ]; then \
+	@if [ ! -f app/data/kg.csv ]; then \
 		echo "Downloading data files..."; \
-		curl -L "$(GRAPH_DATA_URL)" -o app/data/data.zip; \
-		unzip app/data/data.zip -d app/data; \
-		rm app/data/data.zip; \
+		curl -L "$(GRAPH_DATA_URL)" -o app/data/kg.csv; \
+		unzip app/data/kg.csv -d app/data; \
+		rm app/data/kg.csv; \
 	else \
 		echo "Data files already present."; \
 	fi
@@ -80,7 +80,7 @@ status:
 	docker-compose ps
 
 logs:
-	docker-compose logs -tf webapp
+	docker-compose logs -tf
 
 down:
 	docker-compose down --remove-orphans
