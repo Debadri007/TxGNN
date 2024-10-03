@@ -1,5 +1,4 @@
 FROM pytorch/pytorch:1.8.1-cuda10.2-cudnn7-devel
-# FROM pytorch/pytorch:2.2.0-cuda12.1-cudnn8-devel
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ=UTC
@@ -11,7 +10,7 @@ ENV PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 # RUN apt-get clean
 
 ENV MAX_JOBS=24
-ENV TORCH_CUDA_ARCH_LIST="8.0"
+ENV TORCH_CUDA_ARCH_LIST="3.5;3.7;5.0;5.2;6.0;6.1;6.2;7.0;7.2;7.5;8.0;8.6;8.7;9.0"
 ENV PYTHONUNBUFFERED=1
 ENV PATH=/usr/local/cuda/:${PATH}
 RUN python3 -m pip install --upgrade pip && \

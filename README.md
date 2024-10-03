@@ -29,6 +29,7 @@ This repository provides the implementation of a RESTful API that exposes TxGNN'
   - [Docker Compose Setup](#docker-compose-setup)
 - [Makefile Commands](#makefile-commands)
 - [API Endpoints](#api-endpoints)
+- [LangChain Ready](#langchain-ready)
 - [CUDA Support](#cuda-support)
 - [Citation](#citation)
 - [License](#license)
@@ -41,6 +42,7 @@ TxGNN is a graph neural network (GNN) trained on a knowledge graph of diseases a
 - **CUDA-enabled**: GPU-accelerated predictions for faster performance.
 - **FastAPI**: A modern, fast web framework for building RESTful APIs.
 - **Docker**: Containerized deployment for easy setup and scalability.
+- **LangChain-ready** *(coming soon)*: Native LangChain integration through OpenAPIToolSet (JS / Python) and DynamicTools ([JS](https://js.langchain.com/docs/how_to/custom_tools/#dynamictool) / Python) for each endpoint.
 
 ---
 
@@ -129,6 +131,11 @@ The `Makefile` provides a set of commands to simplify the development and deploy
 - **Method**: `GET`
 - **Parameters**: `disease (str)`, `drug (str)`
 - **Description**: Explains why a drug is recommended as a replacement for the specified disease.
+
+---
+
+## LangChain-Ready
+Native LangChain integration through OpenAPIToolSet (JS / Python) and DynamicTools ([JS](https://js.langchain.com/docs/how_to/custom_tools/#dynamictool) / Python) for each endpoint.
 
 ---
 
