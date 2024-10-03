@@ -5,14 +5,14 @@ This repository provides the implementation of a RESTful API that exposes TxGNN'
 ## TL;DR - Quickstart
 
 1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/txgnn-rest-api.git
-   cd txgnn-rest-api
-  ```
+    ```bash
+    git clone https://github.com/yourusername/txgnn-rest-api.git
+    cd txgnn-rest-api
+    ```
 2. Run the application using Make
-  ```bash
-  make run
-  ```
+    ```bash
+    make run
+    ```
 3. Access the API Once the services are up, the API will be accessible at `http://localhost:8883`.
 
 ## Table of Contents
