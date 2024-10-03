@@ -56,6 +56,7 @@ The repository includes a `docker-compose.yml` file for managing the Docker cont
 1. **Clone the repository**
     ```bash
     git clone https://github.com/healthecosystem/TxGNN.git
+    ```
 2. **Pull**, **build**, and **run** the services Use the following commands from the `Makefile` to pull the required images, build, and run the container:
     ```bash
     make run
@@ -96,7 +97,6 @@ The `Makefile` provides a set of commands to simplify the development and deploy
   1. Creates an empty `.env` file if it does not exist.
   2. Stops all containers and removes volumes, images, and orphaned containers.
   3. Deletes the `.env` file if it exists.
-
 
 ---
 
