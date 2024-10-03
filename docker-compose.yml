@@ -1,0 +1,39 @@
+networks:
+  hivata-frontend-net-dev:
+    driver: bridge
+  hivata-backend-net-dev:
+    driver: bridge
+
+services:
+  txgnn:
+    container_name: txgnn
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    env_file:
+      - .env
+    command: ["--loop", "asyncio", "--workers", "5", "--reload"] #
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8883:80
+    volumes:
+      - ./TxGNN/app:/app/
+      - ./TxGNN/backend/model:/model
+      - ./TxGNN/backend/data:/data:rw
+      - hf_cache:/${HF_HUB_CACHE}
+    networks:
+      - txgnn-backend-net
+    restart: always
+    ipc: host
+    tty: true # enable colorized logs
+    runtime: nvidia
+    logging:
+      options:
+        max-size: "100m"
+        max-file: "10"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://txgnn:80/healthz"]
+      interval: 60s
+      timeout: 10s
+      retries: 4

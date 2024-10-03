@@ -16,12 +16,6 @@ ENV PYTHONUNBUFFERED=1
 ENV PATH=/usr/local/cuda/:${PATH}
 RUN python3 -m pip install --upgrade pip && \
     python3 -m pip install wheel
-# && \
-# TODO TensorRT lean
-# python3 -m pip install --upgrade tensorrt_lean
-# python3 -m pip install --upgrade tensorrt_dispatch
-# python3 -m pip install --upgrade tensorrt
-
 
 WORKDIR /backend
 COPY ./backend .
