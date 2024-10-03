@@ -74,8 +74,6 @@ The repository includes a `docker-compose.yml` file for managing the Docker cont
 
 The `Makefile` provides a set of commands to simplify the development and deployment of the Docker-based FastAPI app. Here are the available commands:
 
-- **`make copy-env`**: Copies the example environment variables file `.env.example` to `.env`.
-
 - **`make pull`**: Pulls the latest Docker images defined in the `docker-compose.yml` file, using parallel processing.
 
 - **`make build`**: Builds the Docker containers as defined in the `docker-compose.yml` file.
