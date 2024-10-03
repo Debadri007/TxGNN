@@ -14,7 +14,7 @@ This repository provides the implementation of a RESTful API that exposes TxGNN'
     ```bash
     make run
     ```
-3. Access the API Once the services are up, the API will be [locally accessible port 8883](http://localhost:8883).
+3. Access the API Once the services are up, the API will be [locally accessible at port 8883](http://localhost:8883).
 
 ## Table of Contents
 - [Overview](#overview)
@@ -54,6 +54,12 @@ TxGNN is a graph neural network (GNN) trained on a knowledge graph of diseases a
 
 The repository includes a `docker-compose.yml` file for managing the Docker container setup. This setup ensures a smooth environment for the API with CUDA support.
 
+**Environment variables**:
+```env
+[MODEL_ZIP_URL](https://drive.usercontent.google.com/download?id=1fxTFkjo2jvmz9k6vesDbCeucQjGRojLj&export=download&authuser=0&confirm=t&uuid=4a7bcb2a-7391-445e-86a6-060b7503d6c9&at=AN_67v0G7YEwLsFuqX52PVDMecVP%3A1727988066581)=https://drive.usercontent.google.com/download?id=1fxTFkjo2jvmz9k6vesDbCeucQjGRojLj&export=download&authuser=0&confirm=t&uuid=4a7bcb2a-7391-445e-86a6-060b7503d6c9&at=AN_67v0G7YEwLsFuqX52PVDMecVP%3A1727988066581
+[DATA_ZIP_URL](https://dvn-cloud.s3.amazonaws.com/10.7910/DVN/IXA7BM/1805e679c4c-72137dbedbf1?response-content-disposition=attachment%3B%20filename%2A%3DUTF-8%27%27kg.csv&response-content-type=text%2Fcsv&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241003T204240Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Credential=AKIAIEJ3NV7UYCSRJC7A%2F20241003%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=287af25ab7dc3c691c7aa9fcca093c9652a7814c1e6e5c314829e17a6504588a)=https://dvn-cloud.s3.amazonaws.com/10.7910/DVN/IXA7BM/1805e679c4c-72137dbedbf1?response-content-disposition=attachment%3B%20filename%2A%3DUTF-8%27%27kg.csv&response-content-type=text%2Fcsv&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241003T204240Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Credential=AKIAIEJ3NV7UYCSRJC7A%2F20241003%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=287af25ab7dc3c691c7aa9fcca093c9652a7814c1e6e5c314829e17a6504588a
+```
+
 1. **Clone the repository**
     ```bash
     git clone https://github.com/healthecosystem/TxGNN.git
@@ -64,7 +70,7 @@ The repository includes a `docker-compose.yml` file for managing the Docker cont
     ```bash
     make run
     ```
-3. Access the API Once the services are up, the API will be [locally accessible port 8883](http://localhost:8883).
+3. Access the API Once the services are up, the API will be [locally accessible at port 8883](http://localhost:8883).
 
 ## Makefile Commands
 
