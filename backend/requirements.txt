@@ -1,0 +1,12 @@
+uvicorn[standard]
+gunicorn
+fastapi[all]
+pydantic
+colorlog
+pandas
+numpy
+tqdm
+matplotlib
+scikit-learn
+goatools
+dgl==0.6.1
