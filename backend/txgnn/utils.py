@@ -692,12 +692,12 @@ class Full_Graph_NegSampler:
 def process_etype(etype, df_in, device):
     print("Processing etype: ", etype)
     try:
-        df_temp = df_in[df_in.relation == etype[0]]
+        df_temp = df_in[df_in.relation == etype[1]]
         src = torch.Tensor(df_temp.x_idx.values).to(device).to(dtype=torch.int64)
         dst = torch.Tensor(df_temp.y_idx.values).to(device).to(dtype=torch.int64)
         return {etype: (src, dst)}
     except:
-        print(etype[0])
+        print(etype[1])
         return {}
 
 
