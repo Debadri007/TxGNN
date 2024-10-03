@@ -91,14 +91,13 @@ The `Makefile` provides a set of commands to simplify the development and deploy
 - **`make restart`**: Restarts the Docker containers by first stopping them and then starting them again.
 
 - **`make run`**: Executes a series of commands to set up the environment and start the application. This command performs the following steps:
-  1. Copies the environment variables file.
-  2. Pulls the required Docker images.
-  3. Builds the Docker containers.
-  4. Starts the containers.
-  5. Displays the status of the containers.
-  6. Sets up any necessary configurations.
-  7. Restarts the containers.
-  8. Shows the logs.
+  1. Pulls the required Docker images.
+  2. Builds the Docker containers.
+  3. Starts the containers.
+  4. Displays the status of the containers.
+  5. Sets up any necessary configurations.
+  6. Restarts the containers.
+  7. Shows the logs.
 
 - **`make purge`**: Completely removes all Docker containers, volumes, and images related to the project. This command also handles the `.env` file:
   1. Creates an empty `.env` file if it does not exist.
