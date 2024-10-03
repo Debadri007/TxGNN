@@ -13,7 +13,7 @@ This repository provides the implementation of a RESTful API that exposes TxGNN'
     ```bash
     make run
     ```
-3. Access the API Once the services are up, the API will be accessible at `http://localhost:8883`.
+3. Access the API Once the services are up, the API will be [locally accessible port 8883](http://localhost:8883).
 
 ## Table of Contents
 - [Overview](#overview)
@@ -61,7 +61,7 @@ The repository includes a `docker-compose.yml` file for managing the Docker cont
     ```bash
     make run
     ```
-3. Access the API Once the services are up, the API will be accessible at `http://localhost:8883`.
+3. Access the API Once the services are up, the API will be [locally accessible port 8883](http://localhost:8883).
 
 ## Makefile Commands
 
