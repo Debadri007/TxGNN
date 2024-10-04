@@ -701,28 +701,47 @@ def process_etype(etype, df_in, device):
         return {}
 
 
-def evaluate_graph_construct(df_valid, g, neg_sampler, k, device, max_threads=24):
+# def evaluate_graph_construct(df_valid, g, neg_sampler, k, device, max_threads=24):
+#     out = {}
+#     df_in = df_valid[["x_idx", "relation", "y_idx"]]
+#     print("1", g.canonical_etypes, df_in)
+
+#     with concurrent.futures.ThreadPoolExecutor(max_workers=max_threads) as executor:
+#         future_to_etype = {
+#             executor.submit(process_etype, etype, df_in, device): etype
+#             for etype in g.canonical_etypes
+#         }
+#         for future in concurrent.futures.as_completed(future_to_etype):
+#             out.update(future.result())
+
+#     print("2")
+#     g_valid = dgl.heterograph(
+#         out, num_nodes_dict={ntype: g.number_of_nodes(ntype) for ntype in g.ntypes}
+#     )
+#     print("3")
+#     ng = Full_Graph_NegSampler(g_valid, k, neg_sampler, device)
+#     print("4")
+#     g_neg_valid = ng(g_valid)
+#     print("5")
+#     return g_valid, g_neg_valid
+
+def evaluate_graph_construct(df_valid, g, neg_sampler, k, device):
     out = {}
-    df_in = df_valid[["x_idx", "relation", "y_idx"]]
-    print("1", g.canonical_etypes, df_in)
+    df_in = df_valid[['x_idx', 'relation', 'y_idx']]
+    for etype in g.canonical_etypes:
+        print("Processing etype: ", etype)
+        try:
+            df_temp = df_in[df_in.relation == etype[1]]
+            src = torch.Tensor(df_temp.x_idx.values).to(device).to(dtype = torch.int64)
+            dst = torch.Tensor(df_temp.y_idx.values).to(device).to(dtype = torch.int64)
+            out.update({etype: (src, dst)})
+        except:
+            print(etype[1])
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_threads) as executor:
-        future_to_etype = {
-            executor.submit(process_etype, etype, df_in, device): etype
-            for etype in g.canonical_etypes
-        }
-        for future in concurrent.futures.as_completed(future_to_etype):
-            out.update(future.result())
+    g_valid = dgl.heterograph(out, num_nodes_dict={ntype: g.number_of_nodes(ntype) for ntype in g.ntypes})
 
-    print("2")
-    g_valid = dgl.heterograph(
-        out, num_nodes_dict={ntype: g.number_of_nodes(ntype) for ntype in g.ntypes}
-    )
-    print("3")
     ng = Full_Graph_NegSampler(g_valid, k, neg_sampler, device)
-    print("4")
     g_neg_valid = ng(g_valid)
-    print("5")
     return g_valid, g_neg_valid
 
 

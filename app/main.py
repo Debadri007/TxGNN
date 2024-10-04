@@ -15,18 +15,30 @@ from fastapi import APIRouter
 # Tests the SDK connection with the server
 
 logger = get_logger_by_name("Hivata | Rare diseases | Knowledge Graph")
+import torch
+
+# Check if CUDA is available
+if torch.cuda.is_available():
+    # Get the number of available devices
+    num_devices = torch.cuda.device_count()
+    print(f"Number of available CUDA devices: {num_devices}")
+
+    # List all available devices
+    for i in range(num_devices):
+        print(f"Device {i}: {torch.cuda.get_device_name(i)}")
+else:
+    print("CUDA is not available.")
 
 TxData = TxData(data_folder_path="./data")
-TxData.prepare_split(split="complex_disease", seed=42)  # , no_kg=False
+TxData.prepare_split(split="complex_disease", seed=42, no_kg=True)  # ,
 TxGNN = TxGNN(
     data=TxData,
-    weight_bias_track=False,
     proj_name="TxGNN",  # wandb project name
     exp_name="TxGNN",  # wandb experiment name
     device="cuda:0",  # define your cuda device
 )
 print(str(f"Loading pre-trained GNN model ... {repr(TxGNN)}"))
-TxGNN.load_pretrained(path="/model")
+TxGNN.load_pretrained("/model")
 print(str(f"Loading pre-trained GNN model successfull! {repr(TxGNN)}"))
 
 

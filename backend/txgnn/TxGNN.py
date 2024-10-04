@@ -676,6 +676,36 @@ class TxGNN:
         return similar_diseases
 
     def load_pretrained(self, path):
+            print("Opening file ... ")
+            with open(os.path.join(path, "config.pkl"), "rb") as f:
+                config = pickle.load(f)
+
+            print("Initialize model with config ... ", config)
+            self.model_initialize(**config)
+            self.config = config
+            print("Initialized model with config ... ", self)
+
+            print("Load state dict ... ")
+            state_dict = torch.load(
+                os.path.join(path, "model.pt"), map_location=torch.device("cpu")
+            )
+            print("Loading modules ... ")
+
+            # Remove 'module.' prefix if present (for compatibility with DataParallel)
+            new_state_dict = {k.replace("module.", ""): v for k, v in state_dict.items()}
+
+            # Filter out unexpected keys
+            model_dict = self.model.state_dict()
+            new_state_dict = {k: v for k, v in new_state_dict.items() if k in model_dict}
+
+            # Load the filtered state dict
+            self.model.load_state_dict(new_state_dict, strict=False)
+
+            print("Set model ... ")
+            self.model = self.model.to(self.device)
+            print("Set best model ... ")
+            self.best_model = self.model
+    def load_pretrained(self, path):
         ## load config file
         print("Opening file ... ")
         with open(os.path.join(path, "config.pkl"), "rb") as f:
