@@ -30,7 +30,7 @@ else:
     print("CUDA is not available.")
 
 TxData = TxData(data_folder_path="./data")
-TxData.prepare_split(split="complex_disease", seed=42, no_kg=True)  # ,
+TxData.prepare_split(split="complex_disease", seed=42)  # ,no_kg=True
 TxGNN = TxGNN(
     data=TxData,
     proj_name="TxGNN",  # wandb project name
