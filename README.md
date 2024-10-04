@@ -132,6 +132,28 @@ The `Makefile` provides a set of commands to simplify the development and deploy
 - **Parameters**: `disease (str)`, `drug (str)`
 - **Description**: Explains why a drug is recommended as a replacement for the specified disease.
 
+
+### Update local PrimeKG (coming soon)
+- **Endpoint**: `/kg/local/update`
+- **Method**: `POST`
+- **Parameters**: tbd
+- **Description**: Updates local Knowledge Graph
+
+### Anonymise / psydonomize local PrimeKG (coming soon)
+- **Endpoint**: `/kg/local/anon`
+- **Method**: `POST`
+- **Parameters**: tbd
+- **Description**: Anonymise / psydonomize local PrimeKG (coming soon)
+
+
+### Submit local KG to global PrimeKG (coming soon)
+- **Endpoint**: `/kg/global/submit`
+- **Method**: `POST`
+- **Parameters**: tbd
+- **Description**: Commit and file PR for local KG to global PrimeKG
+
+
+
 ---
 
 ## LangChain-Ready
