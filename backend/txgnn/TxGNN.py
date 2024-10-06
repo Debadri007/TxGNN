@@ -676,56 +676,19 @@ class TxGNN:
         return similar_diseases
 
     def load_pretrained(self, path):
-            print("Opening file ... ")
-            with open(os.path.join(path, "config.pkl"), "rb") as f:
-                config = pickle.load(f)
-
-            print("Initialize model with config ... ", config)
-            self.model_initialize(**config)
-            self.config = config
-            print("Initialized model with config ... ", self)
-
-            print("Load state dict ... ")
-            state_dict = torch.load(
-                os.path.join(path, "model.pt"), map_location=torch.device("cpu")
-            )
-            print("Loading modules ... ")
-
-            # Remove 'module.' prefix if present (for compatibility with DataParallel)
-            new_state_dict = {k.replace("module.", ""): v for k, v in state_dict.items()}
-
-            # Filter out unexpected keys
-            model_dict = self.model.state_dict()
-            new_state_dict = {k: v for k, v in new_state_dict.items() if k in model_dict}
-
-            # Load the filtered state dict
-            self.model.load_state_dict(new_state_dict, strict=False)
-
-            print("Set model ... ")
-            self.model = self.model.to(self.device)
-            print("Set best model ... ")
-            self.best_model = self.model
-    def load_pretrained(self, path):
         ## load config file
-        print("Opening file ... ")
+
         with open(os.path.join(path, "config.pkl"), "rb") as f:
             config = pickle.load(f)
 
-        print("Inittialise model with config ... ", config)
-
         self.model_initialize(**config)
         self.config = config
-        print("Inittialised model with config ... ", self)
         # self.G = initialize_node_embedding(self.G, config['n_inp'])
-        print("Load state dict ... ")
 
         state_dict = torch.load(
             os.path.join(path, "model.pt"), map_location=torch.device("cpu")
         )
-        print("Loading modules ... ")
-        i = 0
         if next(iter(state_dict))[:7] == "module.":
-            print(f"Loading module {i} ... ")
             # the pretrained model is from data-parallel module
             from collections import OrderedDict
 
@@ -734,16 +697,81 @@ class TxGNN:
                 name = k[7:]  # remove `module.`
                 new_state_dict[name] = v
             state_dict = new_state_dict
-            i += 1
-
-        print("Loading state dict ... ", state_dict)
 
         self.model.load_state_dict(state_dict)
-        print("Set model ... ")
-
         self.model = self.model.to(self.device)
-        print("Set best model ... ")
         self.best_model = self.model
+
+    # def load_pretrained(self, path):
+    #         print("Opening file ... ")
+    #         with open(os.path.join(path, "config.pkl"), "rb") as f:
+    #             config = pickle.load(f)
+
+    #         print("Initialize model with config ... ", config)
+    #         self.model_initialize(**config)
+    #         self.config = config
+    #         print("Initialized model with config ... ", self)
+
+    #         print("Load state dict ... ")
+    #         state_dict = torch.load(
+    #             os.path.join(path, "model.pt"), map_location=torch.device("cpu")
+    #         )
+    #         print("Loading modules ... ")
+
+    #         # Remove 'module.' prefix if present (for compatibility with DataParallel)
+    #         new_state_dict = {k.replace("module.", ""): v for k, v in state_dict.items()}
+
+    #         # Filter out unexpected keys
+    #         model_dict = self.model.state_dict()
+    #         new_state_dict = {k: v for k, v in new_state_dict.items() if k in model_dict}
+
+    #         # Load the filtered state dict
+    #         self.model.load_state_dict(new_state_dict, strict=False)
+
+    #         print("Set model ... ")
+    #         self.model = self.model.to(self.device)
+    #         print("Set best model ... ")
+    #         self.best_model = self.model
+
+    # def load_pretrained(self, path):
+    #     ## load config file
+    #     print("Opening file ... ")
+    #     with open(os.path.join(path, "config.pkl"), "rb") as f:
+    #         config = pickle.load(f)
+
+    #     print("Inittialise model with config ... ", config)
+
+    #     self.model_initialize(**config)
+    #     self.config = config
+    #     print("Inittialised model with config ... ", self)
+    #     # self.G = initialize_node_embedding(self.G, config['n_inp'])
+    #     print("Load state dict ... ")
+
+    #     state_dict = torch.load(
+    #         os.path.join(path, "model.pt"), map_location=torch.device("cpu")
+    #     )
+    #     print("Loading modules ... ")
+    #     i = 0
+    #     if next(iter(state_dict))[:7] == "module.":
+    #         print(f"Loading module {i} ... ")
+    #         # the pretrained model is from data-parallel module
+    #         from collections import OrderedDict
+
+    #         new_state_dict = OrderedDict()
+    #         for k, v in state_dict.items():
+    #             name = k[7:]  # remove `module.`
+    #             new_state_dict[name] = v
+    #         state_dict = new_state_dict
+    #         i += 1
+
+    #     print("Loading state dict ... ", state_dict)
+
+    #     self.model.load_state_dict(state_dict)
+    #     print("Set model ... ")
+
+    #     self.model = self.model.to(self.device)
+    #     print("Set best model ... ")
+    #     self.best_model = self.model
 
     def train_graphmask(
         self,

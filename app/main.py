@@ -1,45 +1,67 @@
+import torch
+
 # Python Imports
 from uuid import uuid4
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 from dotenv import load_dotenv
-from txgnn import TxData, TxGNN, TxEval
+from typing import List
 
-from fastapi import FastAPI, Path, HTTPException, Body, Depends, status, Query
+from fastapi import (
+    FastAPI,
+    Path,
+    HTTPException,
+    Body,
+    Depends,
+    status,
+    Query,
+    APIRouter,
+)
 from fastapi.middleware.cors import CORSMiddleware
 
-from logger import get_logger_by_name
+from enum import Enum
 from fastapi import APIRouter
 
-# Tests the SDK connection with the server
+from logger import get_logger_by_name
+from txgnn import TxData, TxGNN, TxEval
 
-logger = get_logger_by_name("Hivata | Rare diseases | Knowledge Graph")
-import torch
+logger = get_logger_by_name("Hivata | Rare diseases | Drugs Predictor - Explainer ")
 
 # Check if CUDA is available
 if torch.cuda.is_available():
     # Get the number of available devices
     num_devices = torch.cuda.device_count()
-    print(f"Number of available CUDA devices: {num_devices}")
+    logger.info(f"Number of available CUDA devices: {num_devices}")
 
     # List all available devices
     for i in range(num_devices):
-        print(f"Device {i}: {torch.cuda.get_device_name(i)}")
+        logger.info(f"Device {i}: {torch.cuda.get_device_name(i)}")
 else:
-    print("CUDA is not available.")
+    logger.info("CUDA is not available.")
+
 
 TxData = TxData(data_folder_path="./data")
-TxData.prepare_split(split="complex_disease", seed=42)  # ,no_kg=True
+TxData.prepare_split(split="complex_disease", seed=42)
 TxGNN = TxGNN(
     data=TxData,
     proj_name="TxGNN",  # wandb project name
     exp_name="TxGNN",  # wandb experiment name
     device="cuda:0",  # define your cuda device
 )
-print(str(f"Loading pre-trained GNN model ... {repr(TxGNN)}"))
 TxGNN.load_pretrained("/model")
-print(str(f"Loading pre-trained GNN model successfull! {repr(TxGNN)}"))
+logger.info(f"Initializing evaluation model for GNN ... {repr(TxGNN)}")
+TxEval = TxEval(model=TxGNN)
+logger.info(f"Evaluation model for GNN loaded successfully! {repr(TxEval)}")
+
+# Tests the SDK connection with the server
+# TxData, TxGNN, TxEval = get_gnn_model(return_data=True)
+
+
+# Enum for mode to limit to 'indication' or 'contradiction'
+class ModeEnum(str, Enum):
+    indication = "indication"
+    contradiction = "contradiction"
 
 
 class BodySizeLimiterMiddleware(BaseHTTPMiddleware):
@@ -78,25 +100,45 @@ async def get_application_health():
     }
 
 
-# # class syntax
-@router.get("/predict")
-async def get_drug_replacement_prediction(disease: str):
+@router.post("/predict")
+async def get_drug_replacement_prediction(
+    disease_idxs: List[float] = Body(
+        ...,
+        title="Disease Indices",
+        description="A list of disease indices for which drug replacement is requested.",
+    ),
+    mode: ModeEnum = Query(
+        ...,
+        title="Mode",
+        description="Either 'indication' or 'contradiction' for the mode of evaluation.",
+    ),
+):
     """
-    Get a drug replacement prediction based on the given disease.
+    Get a drug replacement prediction based on the given list of disease indices.
 
-    This endpoint returns a prediction or suggestion of an alternative drug
-    that can be used for treating the specified disease. The result will
+    This endpoint returns a prediction or suggestion of alternative drugs
+    that can be used for treating the specified diseases. The result will
     include drug names or any related treatment options.
 
     Args:
-        disease (str): The name of the disease for which a drug replacement
-                       is being requested.
+        disease_idxs (List[float]): A list of disease indices for which drug replacement
+                          is being requested.
+        mode (ModeEnum): Either 'indication' or 'contradiction'.
 
     Returns:
-        JSONResponse: The predicted drug replacement(s) for the given disease.
+        JSONResponse: The predicted drug replacement(s) for the given disease indices.
     """
-    print("disease", disease)
-    return JSONResponse(content=disease)
+    # Use the provided disease indices and mode for evaluation
+    result = TxEval.eval_disease_centric(
+        disease_idxs=disease_idxs,
+        show_plot=False,
+        verbose=True,
+        save_result=False,
+        relation=mode.value,
+    )
+
+    print("disease_idxs", disease_idxs)
+    return JSONResponse(content=result)
 
 
 @router.get("/explain")

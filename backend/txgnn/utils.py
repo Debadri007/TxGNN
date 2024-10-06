@@ -11,7 +11,6 @@ import torch.nn.functional as F
 import dgl.function as fn
 from torch.utils import data
 import pandas as pd
-import concurrent.futures
 from sklearn.metrics import (
     accuracy_score,
     f1_score,
@@ -663,82 +662,21 @@ class Full_Graph_NegSampler:
         )
 
 
-# def evaluate_graph_construct(df_valid, g, neg_sampler, k, device):
-#     out = {}
-#     df_in = df_valid[["x_idx", "relation", "y_idx"]]
-#     print("1")
-#     for etype in g.canonical_etypes:
-#         try:
-#             df_temp = df_in[df_in.relation == etype[1]]
-#             src = torch.Tensor(df_temp.x_idx.values).to(device).to(dtype=torch.int64)
-#             dst = torch.Tensor(df_temp.y_idx.values).to(device).to(dtype=torch.int64)
-#             out.update({etype: (src, dst)})
-#         except:
-#             print(etype[1])
-
-#     print("2")
-#     g_valid = dgl.heterograph(
-#         out, num_nodes_dict={ntype: g.number_of_nodes(ntype) for ntype in g.ntypes}
-#     )
-
-#     print("3")
-#     ng = Full_Graph_NegSampler(g_valid, k, neg_sampler, device)
-#     print("4")
-#     g_neg_valid = ng(g_valid)
-#     print("5")
-#     return g_valid, g_neg_valid
-
-
-def process_etype(etype, df_in, device):
-    print("Processing etype: ", etype)
-    try:
-        df_temp = df_in[df_in.relation == etype[1]]
-        src = torch.Tensor(df_temp.x_idx.values).to(device).to(dtype=torch.int64)
-        dst = torch.Tensor(df_temp.y_idx.values).to(device).to(dtype=torch.int64)
-        return {etype: (src, dst)}
-    except:
-        print(etype[1])
-        return {}
-
-
-# def evaluate_graph_construct(df_valid, g, neg_sampler, k, device, max_threads=24):
-#     out = {}
-#     df_in = df_valid[["x_idx", "relation", "y_idx"]]
-#     print("1", g.canonical_etypes, df_in)
-
-#     with concurrent.futures.ThreadPoolExecutor(max_workers=max_threads) as executor:
-#         future_to_etype = {
-#             executor.submit(process_etype, etype, df_in, device): etype
-#             for etype in g.canonical_etypes
-#         }
-#         for future in concurrent.futures.as_completed(future_to_etype):
-#             out.update(future.result())
-
-#     print("2")
-#     g_valid = dgl.heterograph(
-#         out, num_nodes_dict={ntype: g.number_of_nodes(ntype) for ntype in g.ntypes}
-#     )
-#     print("3")
-#     ng = Full_Graph_NegSampler(g_valid, k, neg_sampler, device)
-#     print("4")
-#     g_neg_valid = ng(g_valid)
-#     print("5")
-#     return g_valid, g_neg_valid
-
 def evaluate_graph_construct(df_valid, g, neg_sampler, k, device):
     out = {}
-    df_in = df_valid[['x_idx', 'relation', 'y_idx']]
+    df_in = df_valid[["x_idx", "relation", "y_idx"]]
     for etype in g.canonical_etypes:
-        print("Processing etype: ", etype)
         try:
             df_temp = df_in[df_in.relation == etype[1]]
-            src = torch.Tensor(df_temp.x_idx.values).to(device).to(dtype = torch.int64)
-            dst = torch.Tensor(df_temp.y_idx.values).to(device).to(dtype = torch.int64)
+            src = torch.Tensor(df_temp.x_idx.values).to(device).to(dtype=torch.int64)
+            dst = torch.Tensor(df_temp.y_idx.values).to(device).to(dtype=torch.int64)
             out.update({etype: (src, dst)})
         except:
             print(etype[1])
 
-    g_valid = dgl.heterograph(out, num_nodes_dict={ntype: g.number_of_nodes(ntype) for ntype in g.ntypes})
+    g_valid = dgl.heterograph(
+        out, num_nodes_dict={ntype: g.number_of_nodes(ntype) for ntype in g.ntypes}
+    )
 
     ng = Full_Graph_NegSampler(g_valid, k, neg_sampler, device)
     g_neg_valid = ng(g_valid)
@@ -1945,6 +1883,7 @@ def disease_centric_evaluation(
         return out_dict_mean, out_dict_std
 
     def get_scores_disease(rel, disease_ids):
+        print("disease_ids", disease_ids)
         df_train_valid = pd.concat([df_train, df_valid])
         df_dd = df_test[df_test.relation.isin(disease_rel_types)]
         df_dd_train = df_train_valid[df_train_valid.relation.isin(disease_rel_types)]
