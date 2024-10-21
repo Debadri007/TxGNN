@@ -13,6 +13,7 @@ from .utils import (
     create_split,
     process_disease_area_split,
     create_dgl_graph,
+    evaluate_graph_construct,
     convert2str,
     data_download_wrapper,
 )

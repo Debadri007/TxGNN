@@ -24,7 +24,6 @@ from enum import Enum
 from fastapi import APIRouter
 
 from logger import get_logger_by_name
-from txgnn import TxData, TxGNN, TxEval
 
 logger = get_logger_by_name("Hivata | Rare diseases | Drugs Predictor - Explainer ")
 
@@ -40,11 +39,13 @@ if torch.cuda.is_available():
 else:
     logger.info("CUDA is not available.")
 
+from txgnn import TxData, TxGNN, TxEval
 
 TxData = TxData(data_folder_path="./data")
-TxData.prepare_split(split="complex_disease", seed=42)
+TxData.prepare_split(split="complex_disease", seed=42)  # no_kg=False
 TxGNN = TxGNN(
     data=TxData,
+    weight_bias_track=False,
     proj_name="TxGNN",  # wandb project name
     exp_name="TxGNN",  # wandb experiment name
     device="cuda:0",  # define your cuda device
@@ -53,9 +54,6 @@ TxGNN.load_pretrained("/model")
 logger.info(f"Initializing evaluation model for GNN ... {repr(TxGNN)}")
 TxEval = TxEval(model=TxGNN)
 logger.info(f"Evaluation model for GNN loaded successfully! {repr(TxEval)}")
-
-# Tests the SDK connection with the server
-# TxData, TxGNN, TxEval = get_gnn_model(return_data=True)
 
 
 # Enum for mode to limit to 'indication' or 'contradiction'
@@ -129,15 +127,20 @@ async def get_drug_replacement_prediction(
         JSONResponse: The predicted drug replacement(s) for the given disease indices.
     """
     # Use the provided disease indices and mode for evaluation
-    result = TxEval.eval_disease_centric(
+
+    results = TxEval.eval_disease_centric(
         disease_idxs=disease_idxs,
         show_plot=False,
-        verbose=True,
+        return_raw=True,
+        # verbose=True,
         save_result=False,
         relation=mode.value,
     )
+    result = results["result"]
 
-    print("disease_idxs", disease_idxs)
+    result["Prediction"] = None
+    result["Labels"] = None
+    print(result, " ... result")
     return JSONResponse(content=result)
 
 
@@ -161,6 +164,7 @@ async def get_drug_replacement_explanation(disease: str, drug: str):
         JSONResponse: A detailed explanation of the drug replacement for the
                       specified disease and drug.
     """
+
     print("disease", disease)
     print("drug", drug)
     return JSONResponse(content=disease)

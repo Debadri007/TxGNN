@@ -185,8 +185,9 @@ def random_fold(df, fold_seed, frac):
     df_train = pd.DataFrame()
     df_valid = pd.DataFrame()
     df_test = pd.DataFrame()
+    unique_rels = df.relation.unique()
     # to avoid extreme minority types don't exist in valid/test
-    for i in df.relation.unique():
+    for i in unique_rels:
         df_temp = df[df.relation == i]
         test = df_temp.sample(frac=test_frac, replace=False, random_state=fold_seed)
         train_val = df_temp[~df_temp.index.isin(test.index)]
@@ -194,9 +195,9 @@ def random_fold(df, fold_seed, frac):
             frac=val_frac / (1 - test_frac), replace=False, random_state=1
         )
         train = train_val[~train_val.index.isin(val.index)]
-        df_train = df_train.append(train)
-        df_valid = df_valid.append(val)
-        df_test = df_test.append(test)
+        df_train = pd.concat([df_train, train])
+        df_valid = pd.concat([df_valid, val])
+        df_test = pd.concat([df_test, test])
 
     return {
         "train": df_train.reset_index(drop=True),
@@ -274,9 +275,11 @@ def complex_disease_fold(df, fold_seed, frac):
             frac=val_frac / (1 - test_frac), replace=False, random_state=1
         )
         train = train_val[~train_val.index.isin(val.index)]
-        df_train = df_train.append(train)
-        df_valid = df_valid.append(val)
-        df_test = df_test.append(test)
+
+        # Replace append with pd.concat
+        df_train = pd.concat([df_train, train])
+        df_valid = pd.concat([df_valid, val])
+        df_test = pd.concat([df_test, test])
 
     df_train = pd.concat([df_train, df_dd_train])
     df_valid = pd.concat([df_valid, df_dd_valid])
@@ -482,6 +485,7 @@ def create_fold_cv(df, split_num, num_splits):
 def create_fold(
     df, fold_seed=100, frac=[0.7, 0.1, 0.2], method="random", disease_idx=0.0
 ):
+    print("create_fold")
     if method == "random":
         out = random_fold(df, fold_seed, frac)
     elif method == "complex_disease":
@@ -1271,7 +1275,10 @@ def reverse_rel_generation(df, df_valid, unique_rel):
         if i[0] != i[2]:
             # bi identity
             temp["relation"] = "rev_" + i[1]
-        df_valid = df_valid.append(temp)
+
+        # Replace append with concat
+        df_valid = pd.concat([df_valid, temp])
+
     return df_valid.reset_index(drop=True)
 
 
@@ -1883,7 +1890,6 @@ def disease_centric_evaluation(
         return out_dict_mean, out_dict_std
 
     def get_scores_disease(rel, disease_ids):
-        print("disease_ids", disease_ids)
         df_train_valid = pd.concat([df_train, df_valid])
         df_dd = df_test[df_test.relation.isin(disease_rel_types)]
         df_dd_train = df_train_valid[df_train_valid.relation.isin(disease_rel_types)]

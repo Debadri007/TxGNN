@@ -99,7 +99,7 @@ class DistMultPredictor(nn.Module):
                     self.bert_embed = np.load(
                         "/n/scratch3/users/k/kh278/bert_basic.npy"
                     )
-                    df_nodes_bert = pd.read_csv("/n/scratch3/users/k/kh278/nodes.csv")
+                    df_nodes_bert = pd.read_csv("/n/scratch3/users/k/kh278/node.csv")
 
                 elif bert_measure == "v1":
                     self.bert_embed = np.load(
