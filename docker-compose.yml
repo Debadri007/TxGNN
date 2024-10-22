@@ -1,0 +1,36 @@
+networks:
+  txgnn-network:
+    driver: bridge
+
+services:
+  txgnn:
+    container_name: txgnn
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    env_file:
+      - .env
+    command: ["--loop", "asyncio", "--workers", "5", "--reload"] #
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8883:80
+    volumes:
+      - ./app:/app/
+      - ./backend/model:/model
+      - ./backend/data:/data:rw
+    networks:
+      - txgnn-network
+    restart: always
+    ipc: host
+    tty: true # enable colorized logs
+    runtime: nvidia
+    logging:
+      options:
+        max-size: "100m"
+        max-file: "10"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://txgnn:80/healthz"]
+      interval: 60s
+      timeout: 10s
+      retries: 4

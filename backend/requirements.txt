@@ -1,0 +1,15 @@
+uvicorn[standard]
+gunicorn
+fastapi[all]
+pydantic
+colorlog
+pandas
+numpy
+tqdm
+matplotlib
+scikit-learn
+goatools
+# dgl-cu102==0.5.2
+torch_geometric
+wandb
+tensorboard
